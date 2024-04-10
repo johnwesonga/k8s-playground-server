@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-playground
+  labels:
+    app: k8s-playground
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: k8s-playground
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: k8s-playground
+    spec:
+      containers:
+      - name: k8s-playground-server
+        image: johnwesonga/k8s-playground-server:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
