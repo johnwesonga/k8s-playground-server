@@ -12,3 +12,4 @@ To run the docker container:
 ```
 docker run -p 8080:8080 johnwesonga/k8s-playground-server:latest
 ```
+
