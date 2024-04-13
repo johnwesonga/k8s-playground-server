@@ -21,8 +21,7 @@ docker run -p 8080:8080 johnwesonga/k8s-playground-server:latest
 1) Set the environment variables with ```eval $(minikube docker-env)```
 2) Build the image with the Docker daemon of Minikube (e.g., ```docker build -t my-image .```)
 3) Set the image in the pod specification like the build tag (e.g., my-image)
-4) 
-Set the imagePullPolicy to Never, otherwise Kubernetes will try to download the image.
+4) Set the imagePullPolicy to Never, otherwise Kubernetes will try to download the image.
 
 **Important note**: You have to run ```eval $(minikube docker-env)``` on each terminal you want to use, since it only sets the environment variables for the current shell session.
 
@@ -33,3 +32,4 @@ Deploy to minikube using kustomize:
 
 ```kustomize build k8s/ | kubectl apply -f - ```
 
+Running ingress on minikube apple silicon https://stackoverflow.com/questions/75204589/minikube-ingress-on-macos-appears-to-be-working-but-never-connects-times-out-no

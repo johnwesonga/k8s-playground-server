@@ -15,4 +15,4 @@ spec:
               service:
                 name: k8s-playground
                 port:
-                  number: 8080
+                  number: 80
