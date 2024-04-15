@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -11,17 +12,17 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func indexHandler(w http.ResponseWriter, _ *http.Request) {
+func indexHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("indexHandler called")
 	w.WriteHeader(200)
-	w.Write([]byte("Hello World!"))
+	fmt.Fprintf(w, "Hello World!")
 
 }
 
 func main() {
 	httpListenPort := os.Getenv("PORT")
 	if httpListenPort == "" {
-		httpListenPort = ":8080"
+		httpListenPort = "8080"
 	}
 
 	interrupt := make(chan os.Signal, 1)
@@ -37,10 +38,10 @@ func main() {
 	loggedRouter := handlers.LoggingHandler(os.Stdout, router)
 
 	go func() {
-		log.Fatal(http.ListenAndServe(httpListenPort, loggedRouter))
+		log.Fatal(http.ListenAndServe(":"+httpListenPort, loggedRouter))
 	}()
 
-	log.Println("Starting k8s-playground-server on port", httpListenPort)
+	log.Printf("Starting k8s-playground-server on port %s", httpListenPort)
 	killSignal := <-interrupt
 	switch killSignal {
 	case os.Interrupt:

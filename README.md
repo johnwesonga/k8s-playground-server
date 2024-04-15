@@ -5,7 +5,7 @@
 To build the container run:
 
 ```
-docker build --load --tag johnwesonga/k8s-playground-server:latest .
+docker build --tag johnwesonga/k8s-playground-server:latest .
 ```
 
 This will build an arm64 image with the tag `johnwesonga/k8s-playground-server:latest` and load it into your local docker registry.
@@ -13,6 +13,21 @@ This will build an arm64 image with the tag `johnwesonga/k8s-playground-server:l
 To run the docker container:
 ```
 docker run -p 8080:8080 johnwesonga/k8s-playground-server:latest
+```
+
+Then access it on:
+```
+curl -i localhost:8080/
+```
+
+To change the port to run on e.g.8880:
+```
+PORT=8880 && docker run -p 9990:${PORT} -e PORT=${PORT} johnwesonga/k8s-playground-server:latest
+```
+
+Then access it on:
+```
+curl -i localhost:9990/
 ```
 
 
