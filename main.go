@@ -19,6 +19,13 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func aboutHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("aboutHandler called")
+	w.WriteHeader(200)
+	fmt.Fprintf(w, "About Handler")
+
+}
+
 func main() {
 	httpListenPort := os.Getenv("PORT")
 	if httpListenPort == "" {
@@ -34,6 +41,7 @@ func main() {
 	})
 
 	router.HandleFunc("/", indexHandler).Methods("GET")
+	router.HandleFunc("/about", aboutHandler).Methods("GET")
 
 	loggedRouter := handlers.LoggingHandler(os.Stdout, router)
 
