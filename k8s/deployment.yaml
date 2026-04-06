@@ -22,6 +22,6 @@ spec:
       containers:
       - name: k8s-playground-server
         image: johnwesonga/k8s-playground-server:latest
-        imagePullPolicy: Never
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

@@ -15,6 +15,11 @@ To run the docker container:
 docker run -p 8080:8080 johnwesonga/k8s-playground-server:latest
 ```
 
+To run the docker container in detached mode:
+```
+docker run -d -p 8080:8080 johnwesonga/k8s-playground-server:latest
+```
+
 Then access it on:
 ```
 curl -i localhost:8080/

@@ -1,4 +1,5 @@
-FROM golang:1.21-alpine3.19 AS builder
+# ---- Build Stage ----
+FROM golang:1.25.3-alpine AS builder
 
 # Set necessary environment variables needed for our image
 ENV GO111MODULE=on \
@@ -6,30 +7,34 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOARCH=arm64
 
-# Move to working directory /build
-WORKDIR /build
+WORKDIR /app
 
-# Copy and download dependency using go mod
-COPY go.mod .
-COPY go.sum .
+# Install git (needed for some dependencies)
+RUN apk add --no-cache git
+
+# Cache dependencies
+COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy the code into the container
+# Copy source
 COPY . .
 
-# Build the application
-RUN go build -v -o main .
+# Build binary
+RUN go build -o server
 
-# Move to /dist directory as the place for resulting binary folder
-WORKDIR /dist
+# ---- Runtime Stage ----
+FROM alpine:3.23
 
-# Copy binary from build to main folder
-RUN cp /build/main .
+WORKDIR /app
 
-# Build a small image
-FROM scratch
+# Add non-root user
+RUN adduser -D appuser
 
-COPY --from=builder /dist/main /
+# Copy binary from builder
+COPY --from=builder /app/server .
 
-# Command to run
-ENTRYPOINT ["/main"]
+USER appuser
+
+EXPOSE 8080
+
+CMD ["./server"]

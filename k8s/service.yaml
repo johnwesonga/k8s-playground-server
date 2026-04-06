@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: k8s-playground
   labels:
-    run: k8s-playground
+    app: k8s-playground
 spec:
   ports:
   - name: http
@@ -11,4 +11,4 @@ spec:
     targetPort: 8080
     protocol: TCP
   selector:
-    run: k8s-playground
+    app: k8s-playground
