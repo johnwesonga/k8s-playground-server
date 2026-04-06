@@ -8,7 +8,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-        app: k8s-playground
+      app: k8s-playground
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -20,20 +20,20 @@ spec:
         app: k8s-playground
     spec:
       containers:
-      - name: k8s-playground-server
-        image: johnwesonga/k8s-playground-server:latest
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 8080
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 8080
-          initialDelaySeconds: 2
-          periodSeconds: 5
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 10
+        - name: k8s-playground-server
+          image: johnwesonga/k8s-playground-server:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10

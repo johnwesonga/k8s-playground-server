@@ -8,9 +8,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
-	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"go.uber.org/zap"
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -27,7 +28,29 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func LoggingMiddleware(logger *zap.Logger) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			start := time.Now()
+
+			// Pass request to the next handler
+			next.ServeHTTP(w, r)
+
+			// Log request details
+			logger.Info("http_request",
+				zap.String("method", r.Method),
+				zap.String("path", r.URL.Path),
+				zap.String("remote_addr", r.RemoteAddr),
+				zap.Duration("duration", time.Since(start)),
+				zap.String("user_agent", r.UserAgent()))
+		})
+	}
+}
+
 func main() {
+	logger, _ := zap.NewProduction()
+	defer logger.Sync()
+
 	httpListenPort := os.Getenv("PORT")
 	if httpListenPort == "" {
 		httpListenPort = "8080"
@@ -48,7 +71,8 @@ func main() {
 	router.HandleFunc("/", indexHandler).Methods("GET")
 	router.HandleFunc("/about", aboutHandler).Methods("GET")
 
-	loggedRouter := handlers.LoggingHandler(os.Stdout, router)
+	// loggedRouter := handlers.LoggingHandler(os.Stdout, router)
+	loggedRouter := LoggingMiddleware(logger)(router)
 
 	go func() {
 		log.Fatal(http.ListenAndServe(":"+httpListenPort, loggedRouter))
